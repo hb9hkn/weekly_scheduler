@@ -346,3 +346,8 @@ declare global {
     'schedule-toolbar': ScheduleToolbar;
   }
 }
+
+// Explicitly register custom element
+if (!customElements.get('schedule-toolbar')) {
+  customElements.define('schedule-toolbar', ScheduleToolbar);
+}

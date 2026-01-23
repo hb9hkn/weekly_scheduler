@@ -449,3 +449,11 @@ declare global {
     'weekly-scheduler-card-editor': WeeklySchedulerCardEditor;
   }
 }
+
+// Explicitly register custom elements (backup for decorator issues)
+if (!customElements.get('weekly-scheduler-card')) {
+  customElements.define('weekly-scheduler-card', WeeklySchedulerCard);
+}
+if (!customElements.get('weekly-scheduler-card-editor')) {
+  customElements.define('weekly-scheduler-card-editor', WeeklySchedulerCardEditor);
+}

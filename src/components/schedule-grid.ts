@@ -406,3 +406,8 @@ declare global {
     'schedule-grid': ScheduleGrid;
   }
 }
+
+// Explicitly register custom element
+if (!customElements.get('schedule-grid')) {
+  customElements.define('schedule-grid', ScheduleGrid);
+}
