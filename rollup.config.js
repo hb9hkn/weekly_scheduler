@@ -6,7 +6,7 @@ export default {
   input: 'src/weekly-scheduler-card.ts',
   output: {
     file: 'www/weekly-scheduler-card.js',
-    format: 'es',
+    format: 'iife',
     sourcemap: false,
   },
   plugins: [
