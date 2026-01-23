@@ -70,12 +70,13 @@ export class ScheduleGrid extends LitElement {
     .grid-container {
       display: grid;
       grid-template-columns: 50px repeat(7, 1fr);
-      grid-template-rows: 30px repeat(48, 1fr);
+      grid-template-rows: 30px repeat(48, minmax(14px, 1fr));
       gap: 1px;
       background: var(--grid-border);
       border: 1px solid var(--grid-border);
       border-radius: 4px;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       min-height: 600px;
       max-height: 80vh;
       user-select: none;
@@ -110,6 +111,7 @@ export class ScheduleGrid extends LitElement {
       position: sticky;
       left: 0;
       z-index: 1;
+      min-height: 14px;
     }
 
     .time-label.even-hour {
@@ -330,7 +332,7 @@ export class ScheduleGrid extends LitElement {
 
     return html`
       <div class="time-label ${isEvenHour ? 'even-hour' : ''}">
-        ${showLabel ? time : ''}
+        ${showLabel ? time : html`&nbsp;`}
       </div>
     `;
   }

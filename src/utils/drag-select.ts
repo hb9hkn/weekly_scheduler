@@ -132,7 +132,7 @@ export function getCellFromEvent(
     clientY = event.clientY;
   }
 
-  // Calculate relative position
+  // Calculate relative position within visible area
   const x = clientX - rect.left;
   const y = clientY - rect.top;
 
@@ -148,14 +148,18 @@ export function getCellFromEvent(
 
   if (dayIndex < 0 || dayIndex >= 7) return null;
 
-  // Account for header row
+  // Account for header row and scroll position
   const headerHeight = 30;
-  const gridY = y - headerHeight;
+  // Add scroll offset to get position in full content, not just visible area
+  const gridY = y - headerHeight + gridElement.scrollTop;
 
   if (gridY < 0) return null;
 
   // Calculate row (slot) - 48 rows
-  const rowHeight = (rect.height - headerHeight) / 48;
+  // Use scrollHeight (full content height) instead of rect.height (visible height)
+  // Subtract 1px gaps between rows (48 gaps for 48 rows after header)
+  const contentHeight = gridElement.scrollHeight - headerHeight - 48;
+  const rowHeight = contentHeight / 48;
   const slot = Math.floor(gridY / rowHeight);
 
   if (slot < 0 || slot >= 48) return null;
