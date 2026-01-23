@@ -53,6 +53,7 @@ export interface SchedulerEntityAttributes {
   helper_type: 'input_number' | 'input_boolean';
   enabled: boolean;
   current_timeblock: CurrentTimeBlock | null;
+  friendly_name?: string;
 }
 
 export interface SchedulerEntity {
