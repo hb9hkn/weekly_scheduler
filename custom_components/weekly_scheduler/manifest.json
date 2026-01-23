@@ -1,0 +1,12 @@
+{
+  "domain": "weekly_scheduler",
+  "name": "Weekly Scheduler",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/your-repo/weekly-scheduler",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/your-repo/weekly-scheduler/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

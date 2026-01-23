@@ -1,0 +1,49 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Weekly Schedule",
+        "description": "Select a helper entity to create a weekly schedule for. Found {helper_count} available helpers.",
+        "data": {
+          "helper_entity": "Helper Entity"
+        }
+      }
+    },
+    "error": {
+      "invalid_helper": "Selected entity is not a valid helper (must be input_number or input_boolean)"
+    },
+    "abort": {
+      "already_configured": "A schedule already exists for this helper",
+      "no_helpers": "No input_number or input_boolean helpers found. Please create a helper first."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Schedule",
+        "description": "Use the Lovelace card to edit the schedule."
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "weekly_scheduler": {
+        "name": "Weekly Schedule"
+      }
+    }
+  },
+  "services": {
+    "set_schedule": {
+      "name": "Set Schedule",
+      "description": "Update the complete weekly schedule"
+    },
+    "copy_to_all": {
+      "name": "Copy to All Days",
+      "description": "Copy schedule from one day to all days"
+    },
+    "copy_to_workdays": {
+      "name": "Copy to Workdays",
+      "description": "Copy schedule from one day to Monday-Friday"
+    }
+  }
+}

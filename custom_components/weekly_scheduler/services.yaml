@@ -1,0 +1,77 @@
+set_schedule:
+  name: Set Schedule
+  description: Update the complete weekly schedule for a scheduler entity
+  fields:
+    entity_id:
+      name: Entity
+      description: The weekly scheduler switch entity
+      required: true
+      selector:
+        entity:
+          domain: switch
+          integration: weekly_scheduler
+    schedule:
+      name: Schedule
+      description: >-
+        The weekly schedule as a dictionary with days as keys and lists of
+        timeblocks as values. Each timeblock has start, end, and value fields.
+      required: true
+      example: >-
+        {"monday": [{"start": "06:00", "end": "22:00", "value": 70}], "tuesday":
+        []}
+      selector:
+        object:
+
+copy_to_all:
+  name: Copy to All Days
+  description: Copy the schedule from one day to all seven days
+  fields:
+    entity_id:
+      name: Entity
+      description: The weekly scheduler switch entity
+      required: true
+      selector:
+        entity:
+          domain: switch
+          integration: weekly_scheduler
+    source_day:
+      name: Source Day
+      description: The day to copy from
+      required: true
+      selector:
+        select:
+          options:
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+            - sunday
+
+copy_to_workdays:
+  name: Copy to Workdays
+  description: Copy the schedule from one day to Monday through Friday
+  fields:
+    entity_id:
+      name: Entity
+      description: The weekly scheduler switch entity
+      required: true
+      selector:
+        entity:
+          domain: switch
+          integration: weekly_scheduler
+    source_day:
+      name: Source Day
+      description: The day to copy from
+      required: true
+      selector:
+        select:
+          options:
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+            - sunday

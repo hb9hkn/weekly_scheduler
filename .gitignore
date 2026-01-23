@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output (keep www/ but ignore if building locally)
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv/
+venv/
+
+# Logs
+*.log
+npm-debug.log*
