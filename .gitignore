@@ -1,9 +1,3 @@
-# Dependencies
-node_modules/
-
-# Build output (keep www/ but ignore if building locally)
-dist/
-
 # IDE
 .vscode/
 .idea/
@@ -26,4 +20,3 @@ venv/
 
 # Logs
 *.log
-npm-debug.log*

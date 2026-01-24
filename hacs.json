@@ -3,8 +3,5 @@
   "render_readme": true,
   "domains": ["switch"],
   "iot_class": "local_polling",
-  "homeassistant": "2023.1.0",
-  "content_in_root": false,
-  "filename": "weekly-scheduler-card.js",
-  "zip_release": false
+  "homeassistant": "2023.1.0"
 }
