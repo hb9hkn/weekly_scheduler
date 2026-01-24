@@ -20,3 +20,11 @@ venv/
 
 # Logs
 *.log
+
+# Node (local development only)
+node_modules/
+dist/
+
+# Local development files
+DEVELOPMENT_CONTEXT.md
+functional_requirements.md

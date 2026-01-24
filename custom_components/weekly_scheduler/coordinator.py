@@ -101,8 +101,27 @@ class WeeklySchedulerCoordinator:
         if data:
             self._schedule = data.get("schedule", DEFAULT_SCHEDULE.copy())
             self._enabled = data.get("enabled", True)
+
+            # Verify helper_entity from storage matches config entry
+            stored_helper = data.get("helper_entity")
+            if stored_helper and stored_helper != self.helper_entity:
+                _LOGGER.warning(
+                    "Stored helper_entity (%s) differs from config entry (%s), using config entry",
+                    stored_helper,
+                    self.helper_entity,
+                )
+
             _LOGGER.debug(
-                "Loaded schedule for %s: enabled=%s", self.helper_entity, self._enabled
+                "Loaded schedule for %s: enabled=%s, helper_entity=%s, helper_type=%s",
+                self.helper_entity,
+                self._enabled,
+                self.helper_entity,
+                self.helper_type,
+            )
+        else:
+            _LOGGER.debug(
+                "No stored data found for %s, using defaults",
+                self.helper_entity,
             )
 
     async def async_save(self) -> None:
@@ -111,7 +130,14 @@ class WeeklySchedulerCoordinator:
             {
                 "schedule": self._schedule,
                 "enabled": self._enabled,
+                "helper_entity": self.helper_entity,
+                "helper_type": self.helper_type,
             }
+        )
+        _LOGGER.debug(
+            "Saved schedule for %s: enabled=%s",
+            self.helper_entity,
+            self._enabled,
         )
 
     def set_entity_callback(self, callback: callable) -> None:

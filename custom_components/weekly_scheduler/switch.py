@@ -44,9 +44,21 @@ class WeeklySchedulerSwitch(SwitchEntity):
         self._entry = entry
         self._attr_unique_id = f"{DOMAIN}_{entry.entry_id}"
 
-        # Extract helper name for display
-        helper_entity = entry.data[CONF_HELPER_ENTITY]
-        helper_name = helper_entity.split(".")[-1].replace("_", " ").title()
+        # Extract helper name for display - use coordinator as source of truth
+        helper_entity = coordinator.helper_entity
+        if not helper_entity:
+            _LOGGER.error(
+                "No helper_entity in coordinator for entry %s",
+                entry.entry_id,
+            )
+            helper_entity = entry.data.get(CONF_HELPER_ENTITY, "unknown")
+
+        helper_name = helper_entity.split(".")[-1].replace("_", " ").title() if helper_entity else "Unknown"
+        _LOGGER.debug(
+            "Initializing switch for entry %s: helper_entity=%s",
+            entry.entry_id,
+            helper_entity,
+        )
 
         self._attr_name = f"Weekly Schedule - {helper_name}"
         self._attr_icon = "mdi:calendar-clock"
@@ -76,11 +88,23 @@ class WeeklySchedulerSwitch(SwitchEntity):
         """Run when entity is added to hass."""
         await super().async_added_to_hass()
 
+        _LOGGER.debug(
+            "Adding switch to hass: entry_id=%s, helper_entity=%s, helper_type=%s",
+            self._entry.entry_id,
+            self.coordinator.helper_entity,
+            self.coordinator.helper_type,
+        )
+
         # Register callback for coordinator updates
         self.coordinator.set_entity_callback(self._handle_coordinator_update)
 
         # Start the coordinator
         await self.coordinator.async_start()
+
+        _LOGGER.debug(
+            "Switch started successfully for %s",
+            self.coordinator.helper_entity,
+        )
 
         # Listen for manual changes to the helper entity
         self.async_on_remove(

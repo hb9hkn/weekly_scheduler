@@ -49,8 +49,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Weekly Scheduler from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    helper_entity = entry.data[CONF_HELPER_ENTITY]
-    helper_type = entry.data[CONF_HELPER_TYPE]
+    helper_entity = entry.data.get(CONF_HELPER_ENTITY)
+    helper_type = entry.data.get(CONF_HELPER_TYPE)
+
+    _LOGGER.debug(
+        "Setting up Weekly Scheduler entry %s: helper_entity=%s, helper_type=%s",
+        entry.entry_id,
+        helper_entity,
+        helper_type,
+    )
+
+    if not helper_entity or not helper_type:
+        _LOGGER.error(
+            "Missing configuration data for entry %s: helper_entity=%s, helper_type=%s",
+            entry.entry_id,
+            helper_entity,
+            helper_type,
+        )
+        return False
 
     # Create the coordinator
     coordinator = WeeklySchedulerCoordinator(
