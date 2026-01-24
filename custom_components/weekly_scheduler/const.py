@@ -41,6 +41,8 @@ ATTR_CURRENT_TIMEBLOCK = "current_timeblock"
 SERVICE_SET_SCHEDULE = "set_schedule"
 SERVICE_COPY_TO_ALL = "copy_to_all"
 SERVICE_COPY_TO_WORKDAYS = "copy_to_workdays"
+SERVICE_CREATE_SCHEDULE = "create_schedule"
+SERVICE_DELETE_SCHEDULE = "delete_schedule"
 
 # Storage
 STORAGE_KEY = "weekly_scheduler"

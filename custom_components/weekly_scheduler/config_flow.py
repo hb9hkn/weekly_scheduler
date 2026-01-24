@@ -10,11 +10,6 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers.selector import (
-    EntitySelector,
-    EntitySelectorConfig,
-)
 
 from .const import (
     CONF_HELPER_ENTITY,
@@ -25,21 +20,6 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-
-def get_available_helpers(hass: HomeAssistant) -> list[str]:
-    """Get list of available input_number and input_boolean entities."""
-    helpers = []
-
-    # Get all states that are input_number or input_boolean
-    for state in hass.states.async_all():
-        entity_id = state.entity_id
-        if entity_id.startswith("input_number.") or entity_id.startswith(
-            "input_boolean."
-        ):
-            helpers.append(entity_id)
-
-    return sorted(helpers)
 
 
 def get_helper_type(entity_id: str) -> str | None:
@@ -54,58 +34,30 @@ def get_helper_type(entity_id: str) -> str | None:
 class WeeklySchedulerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Weekly Scheduler."""
 
-    VERSION = 1
+    VERSION = 2
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the initial step."""
-        errors = {}
+        """Handle the initial step - simplified, no helper selection."""
+        # Check if we already have an entry (only allow one instance)
+        if self._async_current_entries():
+            return self.async_abort(reason="single_instance_allowed")
 
         if user_input is not None:
-            helper_entity = user_input[CONF_HELPER_ENTITY]
-            helper_type = get_helper_type(helper_entity)
+            # Create the entry with no helper - schedules are created dynamically
+            return self.async_create_entry(
+                title="Weekly Scheduler",
+                data={},
+            )
 
-            if helper_type is None:
-                errors["base"] = "invalid_helper"
-            else:
-                # Check if this helper already has a schedule
-                await self.async_set_unique_id(f"{DOMAIN}_{helper_entity}")
-                self._abort_if_unique_id_configured()
-
-                # Create the entry
-                helper_name = helper_entity.split(".")[-1].replace("_", " ").title()
-
-                return self.async_create_entry(
-                    title=f"Schedule: {helper_name}",
-                    data={
-                        CONF_HELPER_ENTITY: helper_entity,
-                        CONF_HELPER_TYPE: helper_type,
-                    },
-                )
-
-        # Build the schema with available helpers
-        available_helpers = get_available_helpers(self.hass)
-
-        if not available_helpers:
-            return self.async_abort(reason="no_helpers")
-
-        data_schema = vol.Schema(
-            {
-                vol.Required(CONF_HELPER_ENTITY): EntitySelector(
-                    EntitySelectorConfig(
-                        domain=["input_number", "input_boolean"],
-                    )
-                ),
-            }
-        )
-
+        # Show confirmation form
         return self.async_show_form(
             step_id="user",
-            data_schema=data_schema,
-            errors=errors,
+            data_schema=vol.Schema({}),
             description_placeholders={
-                "helper_count": str(len(available_helpers)),
+                "info": "This will install the Weekly Scheduler service. "
+                        "Schedules are created from the dashboard card."
             },
         )
 

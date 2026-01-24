@@ -75,3 +75,31 @@ copy_to_workdays:
             - friday
             - saturday
             - sunday
+
+create_schedule:
+  name: Create Schedule
+  description: Create a weekly schedule for a helper entity (input_number or input_boolean)
+  fields:
+    helper_entity:
+      name: Helper Entity
+      description: The input_number or input_boolean entity to create a schedule for
+      required: true
+      selector:
+        entity:
+          domain:
+            - input_number
+            - input_boolean
+
+delete_schedule:
+  name: Delete Schedule
+  description: Delete a weekly schedule for a helper entity
+  fields:
+    helper_entity:
+      name: Helper Entity
+      description: The helper entity whose schedule should be deleted
+      required: true
+      selector:
+        entity:
+          domain:
+            - input_number
+            - input_boolean

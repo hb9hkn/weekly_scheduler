@@ -43,9 +43,9 @@ class WeeklySchedulerCoordinator:
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: ConfigEntry,
         helper_entity: str,
         helper_type: str,
+        entry: ConfigEntry | None = None,
     ) -> None:
         """Initialize the coordinator."""
         self.hass = hass
@@ -56,8 +56,17 @@ class WeeklySchedulerCoordinator:
         self._enabled: bool = True
         self._manual_override: bool = False
         self._last_applied_value: Any = None
+
+        # Determine storage key
+        if entry is not None:
+            # Legacy mode: use entry ID
+            storage_suffix = entry.entry_id
+        else:
+            # New mode: use helper entity as key
+            storage_suffix = helper_entity.replace(".", "_")
+
         self._store: Store = Store(
-            hass, STORAGE_VERSION, f"{STORAGE_KEY}.{entry.entry_id}"
+            hass, STORAGE_VERSION, f"{STORAGE_KEY}.{storage_suffix}"
         )
         self._unsub_time_listener: callable | None = None
         self._entity_callback: callable | None = None

@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import CONF_HELPER_ENTITY, CONF_HELPER_TYPE, DOMAIN
+from .const import CONF_HELPER_ENTITY, DOMAIN
 from .coordinator import WeeklySchedulerCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,9 +23,27 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the Weekly Scheduler switch from a config entry."""
-    coordinator: WeeklySchedulerCoordinator = hass.data[DOMAIN][entry.entry_id]
+    # Store add_entities callback for dynamic entity creation
+    hass.data[DOMAIN]["add_entities_callback"] = async_add_entities
 
-    async_add_entities([WeeklySchedulerSwitch(coordinator, entry)])
+    # Create switches for all coordinators
+    entities = []
+    coordinators = hass.data[DOMAIN].get("coordinators", {})
+
+    for helper_entity, coordinator in coordinators.items():
+        # Check if this is a legacy entry (has entry associated)
+        if coordinator.entry is not None:
+            entities.append(WeeklySchedulerSwitch(coordinator, entry=coordinator.entry))
+        else:
+            entities.append(WeeklySchedulerSwitch(coordinator))
+
+    if entities:
+        async_add_entities(entities)
+
+
+def get_helper_name(helper_entity: str) -> str:
+    """Extract helper name from entity_id."""
+    return helper_entity.split(".")[-1]
 
 
 class WeeklySchedulerSwitch(SwitchEntity):
@@ -37,30 +55,30 @@ class WeeklySchedulerSwitch(SwitchEntity):
     def __init__(
         self,
         coordinator: WeeklySchedulerCoordinator,
-        entry: ConfigEntry,
+        entry: ConfigEntry | None = None,
     ) -> None:
         """Initialize the switch."""
         self.coordinator = coordinator
         self._entry = entry
-        self._attr_unique_id = f"{DOMAIN}_{entry.entry_id}"
 
-        # Extract helper name for display - use coordinator as source of truth
+        # Extract helper name for display
         helper_entity = coordinator.helper_entity
-        if not helper_entity:
-            _LOGGER.error(
-                "No helper_entity in coordinator for entry %s",
-                entry.entry_id,
-            )
-            helper_entity = entry.data.get(CONF_HELPER_ENTITY, "unknown")
+        helper_name = get_helper_name(helper_entity)
+        friendly_name = helper_name.replace("_", " ").title()
 
-        helper_name = helper_entity.split(".")[-1].replace("_", " ").title() if helper_entity else "Unknown"
         _LOGGER.debug(
-            "Initializing switch for entry %s: helper_entity=%s",
-            entry.entry_id,
+            "Initializing switch for helper_entity=%s",
             helper_entity,
         )
 
-        self._attr_name = f"Weekly Schedule - {helper_name}"
+        # Entity ID: switch.weekly_schedule_{helper_name}
+        # Use helper_entity-based unique_id for consistent entity naming
+        self._attr_unique_id = f"{DOMAIN}_{helper_name}"
+
+        # This controls the object_id portion of entity_id
+        self.entity_id = f"switch.weekly_schedule_{helper_name}"
+
+        self._attr_name = f"Weekly Schedule - {friendly_name}"
         self._attr_icon = "mdi:calendar-clock"
 
     @property
@@ -76,12 +94,15 @@ class WeeklySchedulerSwitch(SwitchEntity):
     @property
     def device_info(self) -> DeviceInfo:
         """Return device info."""
+        helper_name = get_helper_name(self.coordinator.helper_entity)
+        friendly_name = helper_name.replace("_", " ").title()
+
         return DeviceInfo(
-            identifiers={(DOMAIN, self._entry.entry_id)},
-            name=self._attr_name,
+            identifiers={(DOMAIN, helper_name)},
+            name=f"Weekly Schedule - {friendly_name}",
             manufacturer="Weekly Scheduler",
             model="Schedule Controller",
-            sw_version="1.0.0",
+            sw_version="0.2.0",
         )
 
     async def async_added_to_hass(self) -> None:
@@ -89,8 +110,7 @@ class WeeklySchedulerSwitch(SwitchEntity):
         await super().async_added_to_hass()
 
         _LOGGER.debug(
-            "Adding switch to hass: entry_id=%s, helper_entity=%s, helper_type=%s",
-            self._entry.entry_id,
+            "Adding switch to hass: helper_entity=%s, helper_type=%s",
             self.coordinator.helper_entity,
             self.coordinator.helper_type,
         )
