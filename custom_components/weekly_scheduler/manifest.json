@@ -1,12 +1,12 @@
 {
   "domain": "weekly_scheduler",
   "name": "Weekly Scheduler",
-  "codeowners": [],
+  "codeowners": ["@hb9hkn"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/your-repo/weekly-scheduler",
+  "documentation": "https://github.com/hb9hkn/weekly_scheduler",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/your-repo/weekly-scheduler/issues",
+  "issue_tracker": "https://github.com/hb9hkn/weekly_scheduler/issues",
   "requirements": [],
-  "version": "1.0.0"
+  "version": "0.1.0"
 }

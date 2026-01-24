@@ -1,6 +1,9 @@
 /**
  * Weekly Scheduler Card - Main Lovelace card component
+ * @version 0.1.0
  */
+
+export const CARD_VERSION = '0.1.0';
 
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -28,7 +31,14 @@ import './components/toolbar';
   name: 'Weekly Scheduler Card',
   description: 'A card for managing weekly schedules for input helpers',
   preview: true,
+  version: CARD_VERSION,
 });
+
+console.info(
+  `%c WEEKLY-SCHEDULER-CARD %c v${CARD_VERSION} `,
+  'color: white; background: #3498db; font-weight: bold;',
+  'color: #3498db; background: white; font-weight: bold;'
+);
 
 @customElement('weekly-scheduler-card')
 export class WeeklySchedulerCard extends LitElement {
