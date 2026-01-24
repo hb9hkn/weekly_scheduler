@@ -1,7 +1,7 @@
 {
   "domain": "weekly_scheduler",
   "name": "Weekly Scheduler",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "codeowners": ["@hb9hkn"],
   "config_flow": true,
   "dependencies": [],
