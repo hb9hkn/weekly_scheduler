@@ -8,7 +8,6 @@ from typing import Any
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_HELPER_ENTITY, DOMAIN
@@ -49,7 +48,6 @@ def get_helper_name(helper_entity: str) -> str:
 class WeeklySchedulerSwitch(SwitchEntity):
     """Switch entity representing a weekly schedule."""
 
-    _attr_has_entity_name = True
     _attr_should_poll = False
 
     def __init__(
@@ -77,8 +75,9 @@ class WeeklySchedulerSwitch(SwitchEntity):
         # This controls the object_id portion of entity_id
         self.entity_id = f"switch.weekly_schedule_{helper_name}"
 
-        # With has_entity_name=True, setting name to None uses device name as friendly name
-        self._attr_name = None
+        # Set friendly name directly (no device, no device-based naming)
+        friendly_name = helper_name.replace("_", " ").title()
+        self._attr_name = f"Weekly Schedule - {friendly_name}"
         self._attr_icon = "mdi:calendar-clock"
 
     @property
@@ -90,20 +89,6 @@ class WeeklySchedulerSwitch(SwitchEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the state attributes."""
         return self.coordinator.get_attributes()
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return device info."""
-        helper_name = get_helper_name(self.coordinator.helper_entity)
-        friendly_name = helper_name.replace("_", " ").title()
-
-        return DeviceInfo(
-            identifiers={(DOMAIN, helper_name)},
-            name=f"Weekly Schedule - {friendly_name}",
-            manufacturer="Weekly Scheduler",
-            model="Schedule Controller",
-            sw_version="0.2.0",
-        )
 
     async def async_added_to_hass(self) -> None:
         """Run when entity is added to hass."""
