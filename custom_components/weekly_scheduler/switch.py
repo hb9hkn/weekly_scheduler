@@ -61,10 +61,9 @@ class WeeklySchedulerSwitch(SwitchEntity):
         self.coordinator = coordinator
         self._entry = entry
 
-        # Extract helper name for display
+        # Extract helper name for entity naming
         helper_entity = coordinator.helper_entity
         helper_name = get_helper_name(helper_entity)
-        friendly_name = helper_name.replace("_", " ").title()
 
         _LOGGER.debug(
             "Initializing switch for helper_entity=%s",
@@ -78,7 +77,8 @@ class WeeklySchedulerSwitch(SwitchEntity):
         # This controls the object_id portion of entity_id
         self.entity_id = f"switch.weekly_schedule_{helper_name}"
 
-        self._attr_name = f"Weekly Schedule - {friendly_name}"
+        # With has_entity_name=True, setting name to None uses device name as friendly name
+        self._attr_name = None
         self._attr_icon = "mdi:calendar-clock"
 
     @property
