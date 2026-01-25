@@ -89,6 +89,15 @@ create_schedule:
           domain:
             - input_number
             - input_boolean
+    schedule:
+      name: Initial Schedule
+      description: >-
+        Optional initial schedule as a dictionary with days as keys and lists of
+        timeblocks as values. Each timeblock has start, end, and value fields.
+        If not provided, an empty schedule will be created.
+      required: false
+      example: >-
+        {"monday": [{"start": "06:00", "end": "09:00", "value": 22}], "tuesday": []}
 
 delete_schedule:
   name: Delete Schedule

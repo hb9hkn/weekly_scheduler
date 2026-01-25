@@ -57,6 +57,7 @@ SERVICE_COPY_DAY_SCHEMA = vol.Schema(
 SERVICE_CREATE_SCHEDULE_SCHEMA = vol.Schema(
     {
         vol.Required("helper_entity"): cv.entity_id,
+        vol.Optional("schedule"): dict,
     }
 )
 
@@ -242,6 +243,7 @@ async def _async_setup_services(hass: HomeAssistant) -> None:
     async def handle_create_schedule(call: ServiceCall) -> None:
         """Handle the create_schedule service call."""
         helper_entity = call.data["helper_entity"]
+        initial_schedule = call.data.get("schedule")
 
         # Check if helper entity exists
         if hass.states.get(helper_entity) is None:
@@ -265,6 +267,15 @@ async def _async_setup_services(hass: HomeAssistant) -> None:
             )
             return
 
+        # Validate initial schedule if provided
+        if initial_schedule:
+            for day in DAYS:
+                if day in initial_schedule:
+                    errors = validate_day_schedule(initial_schedule[day])
+                    if errors:
+                        _LOGGER.error("Invalid schedule for %s: %s", day, errors)
+                        return
+
         # Create coordinator
         coordinator = WeeklySchedulerCoordinator(
             hass,
@@ -272,6 +283,10 @@ async def _async_setup_services(hass: HomeAssistant) -> None:
             helper_type,
         )
         hass.data[DOMAIN]["coordinators"][helper_entity] = coordinator
+
+        # Set initial schedule if provided
+        if initial_schedule:
+            await coordinator.async_set_schedule(initial_schedule)
 
         # Create switch entity dynamically
         add_entities = hass.data[DOMAIN].get("add_entities_callback")
