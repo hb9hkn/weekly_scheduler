@@ -349,4 +349,6 @@ All of the above now works.
 ### Notes:
 - Card auto-updates when schedule changes because it reads state from the entity (reactive via hass property)
 - Both repos now have HACS validation workflows for automated testing
-- Feature branch: `feature/permissions-edit-mode` (card repo) — to be merged to main for final release
+- Feature branch `feature/permissions-edit-mode` has been merged to `main`
+- Both repos released as v0.5.0 on 2026-02-15
+- `render_readme` removed from both `hacs.json` files (deprecated in HACS 2.0)
