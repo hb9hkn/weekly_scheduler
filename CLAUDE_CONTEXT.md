@@ -1,7 +1,7 @@
 # Weekly Scheduler - Development Context
 
 **Last Updated:** 2026-02-15
-**Current Version (Backend):** 0.4.3
+**Current Version (Backend):** 0.5.0
 **Current Version (Card):** 0.5.0-beta.6
 
 This file documents the current state of both the backend integration and frontend card repositories for continuing development.
@@ -43,7 +43,7 @@ custom_components/weekly_scheduler/
 ├── config_flow.py       # Simplified setup (no helper selection), VERSION=2
 ├── const.py             # Constants, service names, day names, etc.
 ├── coordinator.py       # WeeklySchedulerCoordinator - manages schedule state & applies values
-├── manifest.json        # HACS manifest, version 0.4.3
+├── manifest.json        # HACS manifest, version 0.5.0
 ├── scheduler.py         # Time/schedule utility functions
 ├── services.yaml        # Service definitions for HA
 ├── switch.py            # WeeklySchedulerSwitch entity

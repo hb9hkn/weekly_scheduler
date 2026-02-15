@@ -54,6 +54,59 @@ The card provides:
 - Visual drag-to-select schedule editor
 - Automatic schedule creation for new helpers
 - Helper entity dropdown for easy configuration
+- Granular permissions for admin vs. regular user dashboards
+- Mobile edit mode with auto-lock to prevent accidental changes
+
+### Card Configuration
+
+```yaml
+type: custom:weekly-scheduler-card
+helper_entity: input_number.bedroom_temperature
+title: Bedroom Temperature Schedule
+```
+
+### Card Configuration Options
+
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `helper_entity` | string | Yes* | - | The helper entity to schedule (`input_number.*` or `input_boolean.*`) |
+| `entity` | string | Yes* | - | Legacy: Direct schedule switch entity ID |
+| `title` | string | No | Entity name | Card title displayed in the header |
+| `schedule_toggle` | boolean | No | `true` | Show the enable/disable schedule toggle |
+| `edit_schedule` | boolean | No | `true` | Allow grid interactions, value input, and copy buttons |
+
+*Either `helper_entity` (recommended) or `entity` (legacy) is required.
+
+### Card Permissions
+
+Permissions let you control which actions are available on each card instance. This is useful for creating separate dashboards for admin and regular users.
+
+| Permission | Default | Controls |
+|------------|---------|----------|
+| `schedule_toggle` | `true` | The on/off switch for the schedule |
+| `edit_schedule` | `true` | Grid drag interactions, value input, and copy buttons |
+
+- All permissions default to `true` — existing cards are unaffected
+- When both are disabled, the card becomes a clean read-only visualization
+- Configurable via the card editor UI (checkboxes) or in YAML
+
+**Example: read-only card for regular users:**
+```yaml
+type: custom:weekly-scheduler-card
+helper_entity: input_number.thermostat_setpoint
+title: Thermostat Schedule
+schedule_toggle: false
+edit_schedule: false
+```
+
+### Mobile Edit Mode
+
+On mobile screens (viewport < 600px), the card activates a safety mode to prevent accidental schedule changes from touch interactions.
+
+- **Edit Mode OFF** (default): The schedule grid is locked. The schedule on/off toggle remains accessible.
+- **Edit Mode ON**: The toolbar appears and the grid becomes interactive.
+- **Auto-lock**: After 30 seconds of no interaction, edit mode turns off automatically.
+- On desktop, all permitted controls are always visible (no edit mode toggle).
 
 ## Services
 
@@ -163,6 +216,7 @@ Each schedule switch entity exposes the following attributes:
 - Values are applied at timeblock boundaries (when a new block starts)
 - During gaps (no active timeblock), the last applied value persists
 - The schedule checks every minute for timeblock changes
+- Default values: **0** for `input_number`, **OFF** for `input_boolean`
 
 ### Manual Override
 
