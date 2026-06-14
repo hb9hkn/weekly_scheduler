@@ -5,7 +5,7 @@ A HACS-compatible Home Assistant custom integration for scheduling `input_number
 ## Screenshots
 
 <p align="center">
-  <img src="images/number_helper_schedule.png" width="400" alt="Number Helper Schedule">
+  <img src="images/number_helper_schedule.png" width="400" alt="Numbers Helper Schedule">
   <img src="images/boolean_helper_schedule.png" width="400" alt="Boolean Helper Schedule">
 </p>
 
